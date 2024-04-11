@@ -1,35 +1,44 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed, } from 'vue';
 import TotalEmissions from './TotalEmissions.vue'
 
 const distance = ref('')
-const checkedNames = ref([])
+// const checkedNames = ref([])
+
+const transports = [
+  { id: 1, name: 'Plane', coGPerKm: '133', selected: true },
+  { id: 2, name: 'Car', coGPerKm: '171', selected: false },
+  { id: 3, name: 'Bus', coGPerKm: '104', selected: false },
+  { id: 4, name: 'Coach', coGPerKm: '27', selected: false },
+]
+
+const selectedTransport = computed(() => {
+  return transports.filter(transport => transport.selected)
+})
 </script>
 
 <template>
   <div class="my-6">
     <h2 class="text-xl uppercase font-bold opacity-85">Transport method</h2>
-    <div class="flex gap-x-2 py-4 flex-row">
-      <div>
-        <input type="checkbox" id="plane" value="Plane" v-model="checkedNames">
-        <label for="plane">Plane</label>
-      </div>
+    <ul class="flex gap-x-2 py-4 flex-row">
+      <li v-for="transport in transports" :key="transport.id">
+        <label>
+          {{ transport.name }}
+          <input type="checkbox" v-model="transport.selected" />
+        </label>
+        <p><span>{{ transport.coGPerKm }} </span> <br /></p>
+      </li>
 
-      <div>
-        <input type="checkbox" id="car" value="Car" v-model="checkedNames">
-        <label for="car">Car</label>
-      </div>
-      <div>
-        <input type="checkbox" id="bus" value="Bus" v-model="checkedNames">
-        <label for="bus">Bus</label>
-      </div>
-      <div>
-        <input type="checkbox" id="rail" value="Rail" v-model="checkedNames">
-        <label for="rail">Rail</label>
-      </div>
-    </div>
-
+    </ul>
+    <p>emissions per passenger per km travelled</p>
   </div>
+  <section v-show="selectedTransport">
+    <p>You are travelling by
+      <span v-for="transport in selectedTransport" :key="transport.id">
+        {{ transport.name }}
+      </span>
+    </p>
+  </section>
   <div class="my-6">
     <h2 class="text-xl uppercase font-bold opacity-85">Distance travelled</h2>
     <p class="my-3"><input type="text" v-model="distance" class="border-teal-900 border-2 rounded py-1 px-2"
